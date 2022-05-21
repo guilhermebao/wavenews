@@ -1,5 +1,5 @@
 import Head from 'next/head'
-
+import { SubscribeButton } from '../components/SubscribeButton';
 import styles from './home.module.scss'
 
 export default function Home() {
@@ -16,6 +16,7 @@ export default function Home() {
           It has survived not only five <br />
           <span>for R$1,00 mes</span>
           </p>
+          <SubscribeButton />
         </section>
         <img src="/images/avatar.svg" alt="Maquiadora" />
       </main>
