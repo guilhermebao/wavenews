@@ -2,10 +2,18 @@ import { GetServerSideProps } from 'next'
 
 import Head from 'next/head'
 import { SubscribeButton } from '../components/SubscribeButton';
+import { stripe } from '../services/stripe';
 import styles from './home.module.scss'
 
-export default function Home(props) {
-  console.log(props)
+interface HomeProps {
+  product: {
+    pricceId: string;
+    amount: number;
+  }
+}
+
+export default function Home({product}: HomeProps) {
+
   return (
     <>
       <Head>
@@ -17,9 +25,9 @@ export default function Home(props) {
           <h1>Lorem Ipsum is <span>Dummy</span> text.</h1>
           <p>
           It has survived not only five <br />
-          <span>for R$1,00 mes</span>
+          <span>for {product.amount} mês</span>
           </p>
-          <SubscribeButton />
+          <SubscribeButton priceId={product.pricceId}/>
         </section>
         <img src="/images/avatar.svg" alt="Maquiadora" />
       </main>
@@ -29,9 +37,19 @@ export default function Home(props) {
 
 
 export const getServerSideProps: GetServerSideProps = async () => {
+  const price = await stripe.prices.retrieve('price_1L2GXwFbq5ALtuFDJ6LIK5v2')
+
+  const product = {
+    priceId: price.id,
+    amount: new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(price.unit_amount / 100),
+  }
+
   return { 
     props: {
-      nome: 'Guilherme'
+      product,
     }
   }
 }
